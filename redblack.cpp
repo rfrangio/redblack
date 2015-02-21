@@ -507,8 +507,8 @@ void RedBlackTree<T>::InorderWalk(TNODE<T> *node_p, int level )
   if (node_p == m_sent_p)
     return;
 
-  std::cout << "key = " <<  *(node_p->fn_p) << ", level " << level << " \n";
   InorderWalk(node_p->left_p, level + 1);
+  std::cout << "key = " <<  *(node_p->fn_p) << ", level " << level << " \n";
   InorderWalk(node_p->right_p, level + 1);
 
 }
