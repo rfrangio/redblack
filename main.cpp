@@ -28,6 +28,7 @@ int main()
 		*entry = roll();
 		//std::cout << "inserting " << *entry << " \n";
 		if(!rbtree.Insert(entry)) {
+			delete entry;
 			dups++;
 		}
 	}
