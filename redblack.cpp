@@ -142,6 +142,7 @@ int RedBlackTree<T>::Insert(T *fn_p)
 
   if(!TreeInsert(target_p)) {
 	  delete target_p;
+	  // Error dup - std::cout << "Error\n";
 	  return 0;
   }
 
@@ -502,13 +503,39 @@ void RedBlackTree<T>::DeleteFixup(TNODE<T> *target_p)
 }
 
 template<typename T>
+int RedBlackTree<T>::NodeCount(TNODE<T> *node_p, int level)
+{
+	int i = 1;
+
+	if (node_p == m_sent_p)
+		return 0;
+
+	i += NodeCount(node_p->left_p, level + 1);
+	//std::cout << "key = " <<  *(node_p->fn_p) << ", level " << level << " \n";
+	i += NodeCount(node_p->right_p, level + 1);
+
+	return i;
+}
+
+template<typename T>
+int RedBlackTree<T>::NodeCount()
+{
+	int ret = 0;
+
+	ret = NodeCount(m_root_p, 0);
+	
+	return ret;
+
+}
+  
+
+template<typename T>
 void RedBlackTree<T>::InorderWalk(TNODE<T> *node_p, int level )
 {
   if (node_p == m_sent_p)
     return;
 
   InorderWalk(node_p->left_p, level + 1);
-  std::cout << "key = " <<  *(node_p->fn_p) << ", level " << level << " \n";
   InorderWalk(node_p->right_p, level + 1);
 
 }
@@ -520,9 +547,6 @@ void RedBlackTree<T>::DoWalk()
   InorderWalk(m_root_p, 0);
 
 }
-  
-
-
 
 
 template class RedBlackTree<int>;

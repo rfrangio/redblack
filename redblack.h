@@ -29,6 +29,7 @@ class RedBlackTree final {
 	TNODE<T>*  TreeMinimum(TNODE<T>*);
 	inline TNODE<T>*  TreeSuccessor(TNODE<T>*);
 	void    InorderWalk(TNODE<T>*, int);
+	int 	NodeCount(TNODE<T>*, int);
 	T* TreeDelete(TNODE<T>*);
 
 public:
@@ -43,6 +44,7 @@ public:
 	int      Insert(T*);
 	T* Delete(T*);
 	void      DoWalk();
+	int		  NodeCount();
 	T* RemoveMaximum();
 
 };

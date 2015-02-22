@@ -20,14 +20,20 @@ int cmp(T* a, T* b)
 
 int main()
 {
-	RedBlackTree<int32_t> rbtree(cmp);
+	RedBlackTree<int> rbtree(cmp);
+	int dups = 0, depth = 0;
+
 	for(int i = 0; i < NUM_OBJECTS; i++) {
 		int *entry = new(int);
 		*entry = roll();
 		//std::cout << "inserting " << *entry << " \n";
-		rbtree.Insert(entry);
+		if(!rbtree.Insert(entry)) {
+			dups++;
+		}
 	}
 
+	std::cout << "After insert phase rbtree has " << rbtree.NodeCount() + dups 
+				<< " nodes \n";
 	//rbtree.DoWalk();	
 
 	int *res = 0;
@@ -35,4 +41,8 @@ int main()
 		//std::cout << "Max ele " << *res << " \n";
 		delete res;
 	}
+
+	depth = 0;
+	std::cout << "After delete phase rbtree has " << rbtree.NodeCount() 
+				<< " nodes  \n";
 }
