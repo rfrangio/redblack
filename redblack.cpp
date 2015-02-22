@@ -548,6 +548,27 @@ void RedBlackTree<T>::DoWalk()
 
 }
 
+template<typename T>
+void RedBlackTree<T>::GetSubtreeDepths(int *left_tree, int *right_tree)
+{
+	GetSubtreeDepths(m_root_p, 0, left_tree, 0, right_tree);
+}
+
+template<typename T>
+void RedBlackTree<T>::GetSubtreeDepths(TNODE<T> *node_p, int left_level, int *left_tree, int right_level, int *right_tree)
+{
+	
+  if (node_p == m_sent_p)
+    return;
+
+	GetSubtreeDepths(node_p->left_p, left_level + 1, left_tree, 0, right_tree);
+	GetSubtreeDepths(node_p->right_p, 0, left_tree, right_level + 1, right_tree);
+
+	if(node_p->left_p == m_sent_p && node_p->right_p == m_sent_p) {
+		if(left_level > *left_tree) *left_tree = left_level;
+		if(right_level > *right_tree) *right_tree = right_level;
+	}	
+}
 
 template class RedBlackTree<int>;
 

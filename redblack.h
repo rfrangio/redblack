@@ -31,6 +31,7 @@ class RedBlackTree final {
 	void    InorderWalk(TNODE<T>*, int);
 	int 	NodeCount(TNODE<T>*, int);
 	T* TreeDelete(TNODE<T>*);
+	void GetSubtreeDepths(TNODE<T>*, int left_level, int *left, int right_level, int *rigth);
 
 public:
 
@@ -45,6 +46,7 @@ public:
 	T* Delete(T*);
 	void      DoWalk();
 	int		  NodeCount();
+	void GetSubtreeDepths(int *left, int *right);
 	T* RemoveMaximum();
 
 };

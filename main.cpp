@@ -3,7 +3,7 @@
 #include "redblack.h"
 
 const int range = std::numeric_limits<int>::max();
-const unsigned int NUM_OBJECTS = 1000000;
+const unsigned int NUM_OBJECTS = 10000000;
  
 std::default_random_engine generator;
 std::uniform_int_distribution<int> distribution(0,range);
@@ -22,7 +22,7 @@ int main()
 {
 	RedBlackTree<int> rbtree(cmp);
 	int dups = 0, depth = 0;
-
+	int left_tree = 0, right_tree = 0;
 	for(int i = 0; i < NUM_OBJECTS; i++) {
 		int *entry = new(int);
 		*entry = roll();
@@ -32,9 +32,12 @@ int main()
 		}
 	}
 
-	std::cout << "After insert phase rbtree has " << rbtree.NodeCount() + dups 
-				<< " nodes \n";
-	//rbtree.DoWalk();	
+	std::cout << "After insert phase rbtree has " << rbtree.NodeCount() + dups << " nodes \n";
+
+	rbtree.GetSubtreeDepths(&left_tree, &right_tree);
+	std::cout << "left subtree depth " << left_tree << " right subtree depth " << right_tree << " \n";
+
+	rbtree.DoWalk();	
 
 	int *res = 0;
 	while((res = rbtree.RemoveMaximum())) {
