@@ -511,7 +511,6 @@ int RedBlackTree<T>::NodeCount(TNODE<T> *node_p, int level)
 		return 0;
 
 	i += NodeCount(node_p->left_p, level + 1);
-	//std::cout << "key = " <<  *(node_p->fn_p) << ", level " << level << " \n";
 	i += NodeCount(node_p->right_p, level + 1);
 
 	return i;
@@ -523,7 +522,6 @@ int RedBlackTree<T>::NodeCount()
 	int ret = 0;
 
 	ret = NodeCount(m_root_p, 0);
-	
 	return ret;
 
 }
@@ -532,12 +530,12 @@ int RedBlackTree<T>::NodeCount()
 template<typename T>
 void RedBlackTree<T>::InorderWalk(TNODE<T> *node_p, int level )
 {
-  if (node_p == m_sent_p)
-    return;
+	if (node_p == m_sent_p)
+		return;
 
-  InorderWalk(node_p->left_p, level + 1);
-  InorderWalk(node_p->right_p, level + 1);
-
+  	InorderWalk(node_p->left_p, level + 1);
+	//std::cout << "key = " <<  *(node_p->fn_p) << ", level " << level << " \n";
+	InorderWalk(node_p->right_p, level + 1);
 }
 
 template<typename T>
@@ -571,7 +569,7 @@ void RedBlackTree<T>::GetSubtreeDepths(TNODE<T> *node_p, int left_level, int *le
 }
 
 template class RedBlackTree<int>;
-
+template class RedBlackTree<uint32_t>;
 
 
 

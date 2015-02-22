@@ -2,11 +2,11 @@
 #include <random>
 #include "redblack.h"
 
-const int range = std::numeric_limits<int>::max();
-const unsigned int NUM_OBJECTS = 10000000;
+const uint32_t range = std::numeric_limits<uint32_t>::max();
+const uint32_t NUM_OBJECTS = 10000000;
  
 std::default_random_engine generator;
-std::uniform_int_distribution<int> distribution(0,range);
+std::uniform_int_distribution<uint32_t> distribution(0,range);
 auto roll = std::bind ( distribution, generator );
 
 template<typename T>
@@ -15,21 +15,20 @@ int cmp(T* a, T* b)
 	if(*a == *b) 
 		return 0;
 
-	return *a < *b ? -1 : 1; 
+	return *a <= *b ? -1 : 1; 
 }
 
 int main()
 {
-	RedBlackTree<int> rbtree(cmp);
-	int dups = 0, depth = 0;
+	RedBlackTree<uint32_t> rbtree(cmp);
+	uint32_t dups = 0;
 	int left_tree = 0, right_tree = 0;
 
 	std::cout << "Inserting " << NUM_OBJECTS << " random objects \n";
  
-	for(int i = 0; i < NUM_OBJECTS; i++) {
-		int *entry = new(int);
+	for(uint32_t i = 0; i < NUM_OBJECTS; i++) {
+		uint32_t *entry = new(uint32_t);
 		*entry = roll();
-		//std::cout << "inserting " << *entry << " \n";
 		if(!rbtree.Insert(entry)) {
 			delete entry;
 			dups++;
@@ -40,9 +39,8 @@ int main()
 	rbtree.GetSubtreeDepths(&left_tree, &right_tree);
 	std::cout << "left subtree depth " << left_tree << " right subtree depth " << right_tree << " \n";
 
-	int *res = 0;
+	uint32_t *res = 0;
 	while((res = rbtree.RemoveMaximum())) {
-		//std::cout << "Max ele " << *res << " \n";
 		delete res;
 	}
 
@@ -50,14 +48,13 @@ int main()
 
 /////   Worst case insertion order showing worst case height imbalance of 2/1  ////////////////////////////////////
 
-	dups = depth = left_tree = right_tree = 0;
+	dups = left_tree = right_tree = 0;
 
 	std::cout << "Inserting " << NUM_OBJECTS << " monotonically increasing objects \n";
  
-	for(int i = 0; i < NUM_OBJECTS; i++) {
-		int *entry = new(int);
+	for(uint32_t i = 0; i < NUM_OBJECTS; i++) {
+		uint32_t *entry = new(uint32_t);
 		*entry = i;
-		//std::cout << "inserting " << *entry << " \n";
 		if(!rbtree.Insert(entry)) {
 			delete entry;
 			dups++;
@@ -68,10 +65,8 @@ int main()
 	rbtree.GetSubtreeDepths(&left_tree, &right_tree);
 	std::cout << "left subtree depth " << left_tree << " right subtree depth " << right_tree << " \n";
 
-	int *res1 = 0;
-	while((res1 = rbtree.RemoveMaximum())) {
-		//std::cout << "Max ele " << *res << " \n";
-		delete res1;
+	while((res = rbtree.RemoveMaximum())) {
+		delete res;
 	}
 
 	std::cout << "After delete phase rbtree has " << rbtree.NodeCount() << " nodes  \n";
