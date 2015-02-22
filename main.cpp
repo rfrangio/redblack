@@ -23,6 +23,9 @@ int main()
 	RedBlackTree<int> rbtree(cmp);
 	int dups = 0, depth = 0;
 	int left_tree = 0, right_tree = 0;
+
+	std::cout << "Inserting " << NUM_OBJECTS << " random objects \n";
+ 
 	for(int i = 0; i < NUM_OBJECTS; i++) {
 		int *entry = new(int);
 		*entry = roll();
@@ -34,11 +37,8 @@ int main()
 	}
 
 	std::cout << "After insert phase rbtree has " << rbtree.NodeCount() + dups << " nodes \n";
-
 	rbtree.GetSubtreeDepths(&left_tree, &right_tree);
 	std::cout << "left subtree depth " << left_tree << " right subtree depth " << right_tree << " \n";
-
-	rbtree.DoWalk();	
 
 	int *res = 0;
 	while((res = rbtree.RemoveMaximum())) {
@@ -46,7 +46,33 @@ int main()
 		delete res;
 	}
 
-	depth = 0;
-	std::cout << "After delete phase rbtree has " << rbtree.NodeCount() 
-				<< " nodes  \n";
+	std::cout << "After delete phase rbtree has " << rbtree.NodeCount() << " nodes  \n";
+
+/////   Worst case insertion order showing worst case height imbalance of 2/1  ////////////////////////////////////
+
+	dups = depth = left_tree = right_tree = 0;
+
+	std::cout << "Inserting " << NUM_OBJECTS << " monotonically increasing objects \n";
+ 
+	for(int i = 0; i < NUM_OBJECTS; i++) {
+		int *entry = new(int);
+		*entry = i;
+		//std::cout << "inserting " << *entry << " \n";
+		if(!rbtree.Insert(entry)) {
+			delete entry;
+			dups++;
+		}
+	}
+
+	std::cout << "After insert phase rbtree has " << rbtree.NodeCount() + dups << " nodes \n";
+	rbtree.GetSubtreeDepths(&left_tree, &right_tree);
+	std::cout << "left subtree depth " << left_tree << " right subtree depth " << right_tree << " \n";
+
+	int *res1 = 0;
+	while((res1 = rbtree.RemoveMaximum())) {
+		//std::cout << "Max ele " << *res << " \n";
+		delete res1;
+	}
+
+	std::cout << "After delete phase rbtree has " << rbtree.NodeCount() << " nodes  \n";
 }
