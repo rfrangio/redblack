@@ -12,7 +12,7 @@ struct TNODE {
    		R *fn_p;
     	TNODE<R> *left_p, *right_p, *parent_p;
     	NCOLOR color;
-	};
+};
 
 template<typename T>
 class RedBlackTree final {

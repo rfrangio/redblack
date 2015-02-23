@@ -1,6 +1,6 @@
 #include <iostream>
 #include <random>
-#include "redblack.h"
+#include "redblack.cpp"
 
 const uint32_t range = std::numeric_limits<uint32_t>::max();
 const uint32_t NUM_OBJECTS = 10000000;
@@ -21,6 +21,7 @@ int cmp(T* a, T* b)
 int main()
 {
 	RedBlackTree<uint32_t> rbtree(cmp);
+	RedBlackTree<char> rbctree(cmp);
 	uint32_t dups = 0;
 	int left_tree = 0, right_tree = 0;
 

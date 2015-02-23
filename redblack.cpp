@@ -568,8 +568,8 @@ void RedBlackTree<T>::GetSubtreeDepths(TNODE<T> *node_p, int left_level, int *le
 	}	
 }
 
-template class RedBlackTree<int>;
-template class RedBlackTree<uint32_t>;
+//template class RedBlackTree<int>;
+//template class RedBlackTree<uint32_t>;
 
 
 
