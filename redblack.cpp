@@ -1,5 +1,6 @@
 #include <iostream>
 #include "redblack.h"
+// Author: Robert B Frangios
 
 template<typename T>
 RedBlackTree<T>::RedBlackTree(int (*func_p) (T *, T *))
