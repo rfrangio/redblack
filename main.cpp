@@ -4,7 +4,7 @@
 // Author: Robert B Frangios
 
 const uint32_t range = std::numeric_limits<uint32_t>::max();
-const uint32_t NUM_OBJECTS = 100000000;
+const uint32_t NUM_OBJECTS = 10000000;
  
 std::default_random_engine generator;
 std::uniform_int_distribution<uint32_t> distribution(0,range);
@@ -26,7 +26,7 @@ int main()
 	uint32_t dups = 0;
 	int left_tree = 0, right_tree = 0;
 	uint32_t *res = 0;
-
+/*
 	std::cout << "Inserting " << NUM_OBJECTS << " random objects \n";
  
 	for(uint32_t i = 0; i < NUM_OBJECTS; i++) {
@@ -49,7 +49,7 @@ int main()
 	std::cout << "After delete phase rbtree has " << rbtree.NodeCount() << " nodes  \n";
 
 	return 1;
-
+*/
 /////   Worst case insertion order showing worst case height imbalance of 2/1  ////////////////////////////////////
 
 	dups = left_tree = right_tree = 0;

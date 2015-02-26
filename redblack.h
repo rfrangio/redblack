@@ -17,7 +17,7 @@ struct TNODE {
 template<typename T>
 class RedBlackTree final {
 
-	TNODE<T> *m_root_p, *m_sent_p;
+	TNODE<T> *m_root_p, *m_sentinel_p;
 	TNODE<T> m_sentinel;
 	int (*cmp_p)(T*, T*);
 
