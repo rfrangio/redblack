@@ -34,6 +34,7 @@ private:
 	int 	NodeCount(TNODE<T>*, int);
 	T* TreeDelete(TNODE<T>*);
 	void GetSubtreeDepths(TNODE<T>*, int left_level, int *left, int right_level, int *rigth);
+	inline TNODE<T>* Search(T*);
 
 public:
 
@@ -41,7 +42,7 @@ public:
 	~RedBlackTree();
 	RedBlackTree(const RedBlackTree &other) = delete;
 	RedBlackTree& operator=(const RedBlackTree &other) = delete;     
-	inline TNODE<T>* Search(T*);
+	T* Lookup(T*);
 	T* Minimum();
 	T* Maximum();
 	int      Insert(T*);

@@ -299,6 +299,22 @@ TNODE<T> *RedBlackTree<T>::Search(T * fn_p)
 }
 
 template<typename T>
+T *RedBlackTree<T>::Lookup(T * fn_p)
+{
+	TNODE<T> *trv_p = m_root_p;
+
+	while (trv_p != m_sentinel_p && cmp_p(fn_p, trv_p->fn_p) != 0) {
+		if (cmp_p(fn_p, trv_p->fn_p) == -1) {
+			trv_p = trv_p->left_p;
+		} else {
+			trv_p = trv_p->right_p;
+		}
+	}
+
+	return trv_p == m_sentinel_p ? 0 : trv_p->fn_p;
+}
+
+template<typename T>
 T* RedBlackTree<T>::Delete(T * fn_p)
 {
 	TNODE<T> *target_p = Search(fn_p), *y_p, *x_p;
