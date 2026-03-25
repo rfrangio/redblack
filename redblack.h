@@ -2,9 +2,6 @@
 #ifndef _BOBREDBLACK
 #define _BOBREDBLACK
 
-#include <time.h>
-
-
 enum NCOLOR {RED, BLACK};
 
 template<typename R>
@@ -54,6 +51,6 @@ public:
 
 };
 
+#include "redblack.tpp"
+
 #endif
-
-

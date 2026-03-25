@@ -1,6 +1,6 @@
 #include <iostream>
 #include <random>
-#include "redblack.cpp"
+#include "redblack.h"
 // Author: Robert B Frangios
 
 const uint32_t range = std::numeric_limits<uint32_t>::max();
