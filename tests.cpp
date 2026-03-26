@@ -5,18 +5,9 @@
 
 #include "redblack.h"
 
-template<typename T>
-int cmp(const T &a, const T &b)
-{
-	if (a == b)
-		return 0;
-
-	return a < b ? -1 : 1;
-}
-
 static void test_empty_tree()
 {
-	RedBlackTree<uint32_t> tree(cmp);
+	RedBlackTree<uint32_t> tree;
 	uint32_t key = 1;
 
 	assert(tree.NodeCount() == 0);
@@ -27,7 +18,7 @@ static void test_empty_tree()
 
 static void test_insert_lookup_and_duplicates()
 {
-	RedBlackTree<uint32_t> tree(cmp);
+	RedBlackTree<uint32_t> tree;
 
 	for (uint32_t value : {10U, 5U, 20U, 15U}) {
 		assert(tree.Insert(value) == 1);
@@ -44,7 +35,7 @@ static void test_insert_lookup_and_duplicates()
 
 static void test_delete_node_with_two_children()
 {
-	RedBlackTree<uint32_t> tree(cmp);
+	RedBlackTree<uint32_t> tree;
 
 	for (uint32_t value : {20U, 10U, 30U, 5U, 15U, 25U, 35U}) {
 		assert(tree.Insert(value) == 1);
@@ -65,7 +56,7 @@ static void test_delete_node_with_two_children()
 
 static void test_remove_maximum_order()
 {
-	RedBlackTree<uint32_t> tree(cmp);
+	RedBlackTree<uint32_t> tree;
 
 	for (uint32_t value : {8U, 3U, 10U, 1U, 6U, 14U, 4U, 7U, 13U}) {
 		assert(tree.Insert(value) == 1);

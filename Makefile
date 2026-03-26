@@ -1,5 +1,5 @@
 CXX := clang++
-CXXFLAGS := -std=c++17 -stdlib=libc++ -Wall -Wextra -pedantic
+CXXFLAGS := -O3 -std=c++17 -stdlib=libc++ -Wall -Wextra -pedantic
 TARGET := rb
 SRC := main.cpp
 TEST_TARGET := /tmp/rb_tests

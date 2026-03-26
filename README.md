@@ -12,18 +12,10 @@ Small C++ red-black tree implementation with inline value storage, a benchmark d
 
 ## API
 
-`RedBlackTree<T>` stores values inline in each node and uses a caller-supplied comparator:
+`RedBlackTree<T, Compare>` stores values inline in each node and uses a comparator type, defaulting to `std::less<T>`:
 
 ```cpp
-template<typename T>
-int cmp(const T &a, const T &b)
-{
-    if (a == b)
-        return 0;
-    return a < b ? -1 : 1;
-}
-
-RedBlackTree<uint32_t> tree(cmp);
+RedBlackTree<uint32_t> tree;
 tree.Insert(10);
 ```
 

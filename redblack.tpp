@@ -1,5 +1,5 @@
-template<typename T>
-RedBlackTree<T>::RedBlackTree(int (*func_p)(const T&, const T&))
+template<typename T, typename Compare>
+RedBlackTree<T, Compare>::RedBlackTree()
 {
 	m_sentinel.color = BLACK;
 	m_sentinel.parent_p = 0;
@@ -10,19 +10,18 @@ RedBlackTree<T>::RedBlackTree(int (*func_p)(const T&, const T&))
 	m_root_p->parent_p = m_sentinel_p;
 	m_root_p->left_p = m_sentinel_p;
 	m_root_p->right_p = m_sentinel_p;
-	cmp_p = func_p;
 }
 
-template<typename T>
-RedBlackTree<T>::~RedBlackTree()
+template<typename T, typename Compare>
+RedBlackTree<T, Compare>::~RedBlackTree()
 {
 	while (m_root_p != m_sentinel_p) {
 		TreeDelete(m_root_p, 0);
 	}
 }
 
-template<typename T>
-void RedBlackTree<T>::LeftRotate(TNODE<T> *target_p)
+template<typename T, typename Compare>
+void RedBlackTree<T, Compare>::LeftRotate(TNODE<T> *target_p)
 {
 	m_sentinel_p->parent_p = target_p;
 
@@ -47,8 +46,8 @@ void RedBlackTree<T>::LeftRotate(TNODE<T> *target_p)
 	target_p->parent_p = y_p;
 }
 
-template<typename T>
-void RedBlackTree<T>::RightRotate(TNODE<T> *target_p)
+template<typename T, typename Compare>
+void RedBlackTree<T, Compare>::RightRotate(TNODE<T> *target_p)
 {
 	m_sentinel_p->parent_p = target_p;
 
@@ -73,8 +72,8 @@ void RedBlackTree<T>::RightRotate(TNODE<T> *target_p)
 	target_p->parent_p = x_p;
 }
 
-template<typename T>
-int RedBlackTree<T>::TreeInsert(TNODE<T> *target_p)
+template<typename T, typename Compare>
+int RedBlackTree<T, Compare>::TreeInsert(TNODE<T> *target_p)
 {
 	TNODE<T> *y_p = m_sentinel_p, *trv_p = m_root_p;
 	m_sentinel_p->parent_p = m_sentinel_p;
@@ -82,7 +81,7 @@ int RedBlackTree<T>::TreeInsert(TNODE<T> *target_p)
 
 	while (trv_p != m_sentinel_p) {
 		y_p = trv_p;
-		ret = cmp_p(target_p->fn, trv_p->fn);
+		ret = cmp_(target_p->fn, trv_p->fn) ? -1 : (cmp_(trv_p->fn, target_p->fn) ? 1 : 0);
 		if (ret == -1) {
 			trv_p = trv_p->left_p;
 		} else if (ret == 1) {
@@ -95,7 +94,7 @@ int RedBlackTree<T>::TreeInsert(TNODE<T> *target_p)
 	target_p->parent_p = y_p;
 	if (y_p == m_sentinel_p) {
 		m_root_p = target_p;
-	} else if (cmp_p(target_p->fn, y_p->fn) == -1) {
+	} else if (cmp_(target_p->fn, y_p->fn)) {
 		y_p->left_p = target_p;
 	} else {
 		y_p->right_p = target_p;
@@ -103,8 +102,8 @@ int RedBlackTree<T>::TreeInsert(TNODE<T> *target_p)
 	return 1;
 }
 
-template<typename T>
-int RedBlackTree<T>::Insert(const T &value)
+template<typename T, typename Compare>
+int RedBlackTree<T, Compare>::Insert(const T &value)
 {
 	TNODE<T> *target_p = new TNODE<T>, *temp_p = m_sentinel_p;
 
@@ -163,8 +162,8 @@ int RedBlackTree<T>::Insert(const T &value)
 	return 1;
 }
 
-template<typename T>
-TNODE<T> *RedBlackTree<T>::TreeMinimum(TNODE<T> *target_p) const
+template<typename T, typename Compare>
+TNODE<T> *RedBlackTree<T, Compare>::TreeMinimum(TNODE<T> *target_p) const
 {
 	while (target_p->left_p != m_sentinel_p) {
 		target_p = target_p->left_p;
@@ -173,8 +172,8 @@ TNODE<T> *RedBlackTree<T>::TreeMinimum(TNODE<T> *target_p) const
 	return target_p;
 }
 
-template<typename T>
-const T *RedBlackTree<T>::Minimum() const
+template<typename T, typename Compare>
+const T *RedBlackTree<T, Compare>::Minimum() const
 {
 	if (m_root_p == m_sentinel_p)
 		return 0;
@@ -182,8 +181,8 @@ const T *RedBlackTree<T>::Minimum() const
 	return &TreeMinimum(m_root_p)->fn;
 }
 
-template<typename T>
-TNODE<T> *RedBlackTree<T>::TreeMaximum(TNODE<T> *target_p) const
+template<typename T, typename Compare>
+TNODE<T> *RedBlackTree<T, Compare>::TreeMaximum(TNODE<T> *target_p) const
 {
 	if (m_root_p == m_sentinel_p)
 		return 0;
@@ -195,8 +194,8 @@ TNODE<T> *RedBlackTree<T>::TreeMaximum(TNODE<T> *target_p) const
 	return target_p;
 }
 
-template<typename T>
-bool RedBlackTree<T>::RemoveMaximum(T *removed_p)
+template<typename T, typename Compare>
+bool RedBlackTree<T, Compare>::RemoveMaximum(T *removed_p)
 {
 	TNODE<T> *node_p = TreeMaximum(m_root_p);
 	if (node_p == 0)
@@ -205,15 +204,15 @@ bool RedBlackTree<T>::RemoveMaximum(T *removed_p)
 	return TreeDelete(node_p, removed_p);
 }
 
-template<typename T>
-const T *RedBlackTree<T>::Maximum() const
+template<typename T, typename Compare>
+const T *RedBlackTree<T, Compare>::Maximum() const
 {
 	TNODE<T> *target_p = TreeMaximum(m_root_p);
 	return target_p ? &target_p->fn : 0;
 }
 
-template<typename T>
-TNODE<T> *RedBlackTree<T>::TreeSuccessor(TNODE<T> *target_p)
+template<typename T, typename Compare>
+TNODE<T> *RedBlackTree<T, Compare>::TreeSuccessor(TNODE<T> *target_p)
 {
 	TNODE<T> *trv_p;
 
@@ -232,54 +231,58 @@ TNODE<T> *RedBlackTree<T>::TreeSuccessor(TNODE<T> *target_p)
 	return trv_p;
 }
 
-template<typename T>
-TNODE<T> *RedBlackTree<T>::Search(const T &value)
+template<typename T, typename Compare>
+TNODE<T> *RedBlackTree<T, Compare>::Search(const T &value)
 {
 	TNODE<T> *trv_p = m_root_p;
 
-	while (trv_p != m_sentinel_p && cmp_p(value, trv_p->fn) != 0) {
-		if (cmp_p(value, trv_p->fn) == -1) {
+	while (trv_p != m_sentinel_p) {
+		if (cmp_(value, trv_p->fn)) {
 			trv_p = trv_p->left_p;
-		} else {
+		} else if (cmp_(trv_p->fn, value)) {
 			trv_p = trv_p->right_p;
+		} else {
+			return trv_p;
 		}
 	}
 
-	return trv_p == m_sentinel_p ? 0 : trv_p;
+	return 0;
 }
 
-template<typename T>
-const TNODE<T> *RedBlackTree<T>::Search(const T &value) const
+template<typename T, typename Compare>
+const TNODE<T> *RedBlackTree<T, Compare>::Search(const T &value) const
 {
 	const TNODE<T> *trv_p = m_root_p;
 
-	while (trv_p != m_sentinel_p && cmp_p(value, trv_p->fn) != 0) {
-		if (cmp_p(value, trv_p->fn) == -1) {
+	while (trv_p != m_sentinel_p) {
+		if (cmp_(value, trv_p->fn)) {
 			trv_p = trv_p->left_p;
-		} else {
+		} else if (cmp_(trv_p->fn, value)) {
 			trv_p = trv_p->right_p;
+		} else {
+			return trv_p;
 		}
 	}
 
-	return trv_p == m_sentinel_p ? 0 : trv_p;
+	return 0;
 }
 
-template<typename T>
-const T *RedBlackTree<T>::Lookup(const T &value) const
+template<typename T, typename Compare>
+const T *RedBlackTree<T, Compare>::Lookup(const T &value) const
 {
 	const TNODE<T> *trv_p = Search(value);
 	return trv_p == 0 ? 0 : &trv_p->fn;
 }
 
-template<typename T>
-bool RedBlackTree<T>::Delete(const T &value, T *removed_p)
+template<typename T, typename Compare>
+bool RedBlackTree<T, Compare>::Delete(const T &value, T *removed_p)
 {
 	TNODE<T> *target_p = Search(value);
 	return target_p == 0 ? false : TreeDelete(target_p, removed_p);
 }
 
-template<typename T>
-bool RedBlackTree<T>::TreeDelete(TNODE<T> *target_p, T *removed_p)
+template<typename T, typename Compare>
+bool RedBlackTree<T, Compare>::TreeDelete(TNODE<T> *target_p, T *removed_p)
 {
 	TNODE<T> *y_p, *x_p;
 	m_sentinel_p->parent_p = target_p;
@@ -325,8 +328,8 @@ bool RedBlackTree<T>::TreeDelete(TNODE<T> *target_p, T *removed_p)
 	return true;
 }
 
-template<typename T>
-void RedBlackTree<T>::DeleteFixup(TNODE<T> *target_p)
+template<typename T, typename Compare>
+void RedBlackTree<T, Compare>::DeleteFixup(TNODE<T> *target_p)
 {
 	TNODE<T> *w_p;
 	m_sentinel_p->parent_p = target_p;
@@ -408,8 +411,8 @@ void RedBlackTree<T>::DeleteFixup(TNODE<T> *target_p)
 	target_p->color = BLACK;
 }
 
-template<typename T>
-int RedBlackTree<T>::NodeCount(TNODE<T> *node_p, int level)
+template<typename T, typename Compare>
+int RedBlackTree<T, Compare>::NodeCount(TNODE<T> *node_p, int level)
 {
 	int i = 1;
 
@@ -422,8 +425,8 @@ int RedBlackTree<T>::NodeCount(TNODE<T> *node_p, int level)
 	return i;
 }
 
-template<typename T>
-int RedBlackTree<T>::NodeCount()
+template<typename T, typename Compare>
+int RedBlackTree<T, Compare>::NodeCount()
 {
 	int ret = 0;
 
@@ -431,8 +434,8 @@ int RedBlackTree<T>::NodeCount()
 	return ret;
 }
 
-template<typename T>
-void RedBlackTree<T>::InorderWalk(TNODE<T> *node_p, int level)
+template<typename T, typename Compare>
+void RedBlackTree<T, Compare>::InorderWalk(TNODE<T> *node_p, int level)
 {
 	if (node_p == m_sentinel_p)
 		return;
@@ -441,20 +444,20 @@ void RedBlackTree<T>::InorderWalk(TNODE<T> *node_p, int level)
 	InorderWalk(node_p->right_p, level + 1);
 }
 
-template<typename T>
-void RedBlackTree<T>::DoWalk()
+template<typename T, typename Compare>
+void RedBlackTree<T, Compare>::DoWalk()
 {
 	InorderWalk(m_root_p, 0);
 }
 
-template<typename T>
-void RedBlackTree<T>::GetSubtreeDepths(int *left_tree, int *right_tree)
+template<typename T, typename Compare>
+void RedBlackTree<T, Compare>::GetSubtreeDepths(int *left_tree, int *right_tree)
 {
 	GetSubtreeDepths(m_root_p, 0, left_tree, 0, right_tree);
 }
 
-template<typename T>
-void RedBlackTree<T>::GetSubtreeDepths(
+template<typename T, typename Compare>
+void RedBlackTree<T, Compare>::GetSubtreeDepths(
 	TNODE<T> *node_p, int left_level, int *left_tree, int right_level, int *right_tree)
 {
 	if (node_p == m_sentinel_p)

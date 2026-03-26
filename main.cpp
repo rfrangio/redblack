@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+
 #include "redblack.h"
 // Author: Robert B Frangios
 
@@ -9,19 +10,10 @@ const uint32_t NUM_OBJECTS = 10000000;
 std::default_random_engine generator;
 std::uniform_int_distribution<uint32_t> distribution(0,range);
 
-template<typename T>
-int cmp(const T &a, const T &b)
-{
-	if(a == b) 
-		return 0;
-
-	return a < b ? -1 : 1; 
-}
-
 int main()
 {
-	RedBlackTree<uint32_t> rbtree(cmp);
-	RedBlackTree<char> rbctree(cmp);
+	RedBlackTree<uint32_t> rbtree;
+	RedBlackTree<char> rbctree;
 	uint32_t dups = 0;
 	int left_tree = 0, right_tree = 0;
 	uint32_t res = 0;

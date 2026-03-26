@@ -2,6 +2,8 @@
 #ifndef _BOBREDBLACK
 #define _BOBREDBLACK
 
+#include <functional>
+
 enum NCOLOR {RED, BLACK};
 
 template<typename R>
@@ -11,14 +13,14 @@ struct TNODE {
     	NCOLOR color;
 };
 
-template<typename T>
+template<typename T, typename Compare = std::less<T>>
 class RedBlackTree final {
 
 private:
 
 	TNODE<T> *m_root_p, *m_sentinel_p;
 	TNODE<T> m_sentinel;
-	int (*cmp_p)(const T&, const T&);
+	Compare cmp_;
 
 	inline void    LeftRotate(TNODE<T>*);
 	inline void    RightRotate(TNODE<T>*);
@@ -36,7 +38,7 @@ private:
 
 public:
 
-	RedBlackTree(int (*cmp_p)(const T&, const T&));
+	RedBlackTree();
 	~RedBlackTree();
 	RedBlackTree(const RedBlackTree &other) = delete;
 	RedBlackTree& operator=(const RedBlackTree &other) = delete;     
