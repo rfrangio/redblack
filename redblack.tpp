@@ -1,11 +1,10 @@
 template<typename T>
-RedBlackTree<T>::RedBlackTree(int (*func_p) (T *, T *))
+RedBlackTree<T>::RedBlackTree(int (*func_p)(const T&, const T&))
 {
 	m_sentinel.color = BLACK;
 	m_sentinel.parent_p = 0;
 	m_sentinel.left_p = 0;
 	m_sentinel.right_p = 0;
-	m_sentinel.fn_p = 0;
 	m_sentinel_p = &m_sentinel;
 	m_root_p = m_sentinel_p;
 	m_root_p->parent_p = m_sentinel_p;
@@ -17,13 +16,8 @@ RedBlackTree<T>::RedBlackTree(int (*func_p) (T *, T *))
 template<typename T>
 RedBlackTree<T>::~RedBlackTree()
 {
-	T *fn_p;
-
 	while (m_root_p != m_sentinel_p) {
-		fn_p = TreeDelete(m_root_p);
-		if (fn_p) {
-			delete fn_p;
-		}
+		TreeDelete(m_root_p, 0);
 	}
 }
 
@@ -88,7 +82,7 @@ int RedBlackTree<T>::TreeInsert(TNODE<T> *target_p)
 
 	while (trv_p != m_sentinel_p) {
 		y_p = trv_p;
-		ret = cmp_p(target_p->fn_p, trv_p->fn_p);
+		ret = cmp_p(target_p->fn, trv_p->fn);
 		if (ret == -1) {
 			trv_p = trv_p->left_p;
 		} else if (ret == 1) {
@@ -101,7 +95,7 @@ int RedBlackTree<T>::TreeInsert(TNODE<T> *target_p)
 	target_p->parent_p = y_p;
 	if (y_p == m_sentinel_p) {
 		m_root_p = target_p;
-	} else if (cmp_p(target_p->fn_p, y_p->fn_p) == -1) {
+	} else if (cmp_p(target_p->fn, y_p->fn) == -1) {
 		y_p->left_p = target_p;
 	} else {
 		y_p->right_p = target_p;
@@ -110,14 +104,14 @@ int RedBlackTree<T>::TreeInsert(TNODE<T> *target_p)
 }
 
 template<typename T>
-int RedBlackTree<T>::Insert(T *fn_p)
+int RedBlackTree<T>::Insert(const T &value)
 {
 	TNODE<T> *target_p = new TNODE<T>, *temp_p = m_sentinel_p;
 
 	target_p->left_p = m_sentinel_p;
 	target_p->right_p = m_sentinel_p;
 	target_p->parent_p = m_sentinel_p;
-	target_p->fn_p = fn_p;
+	target_p->fn = value;
 
 	m_sentinel_p->parent_p = target_p;
 
@@ -170,7 +164,7 @@ int RedBlackTree<T>::Insert(T *fn_p)
 }
 
 template<typename T>
-TNODE<T> *RedBlackTree<T>::TreeMinimum(TNODE<T> *target_p)
+TNODE<T> *RedBlackTree<T>::TreeMinimum(TNODE<T> *target_p) const
 {
 	while (target_p->left_p != m_sentinel_p) {
 		target_p = target_p->left_p;
@@ -180,16 +174,16 @@ TNODE<T> *RedBlackTree<T>::TreeMinimum(TNODE<T> *target_p)
 }
 
 template<typename T>
-T *RedBlackTree<T>::Minimum()
+const T *RedBlackTree<T>::Minimum() const
 {
 	if (m_root_p == m_sentinel_p)
 		return 0;
 
-	return TreeMinimum(m_root_p)->fn_p;
+	return &TreeMinimum(m_root_p)->fn;
 }
 
 template<typename T>
-TNODE<T> *RedBlackTree<T>::TreeMaximum(TNODE<T> *target_p)
+TNODE<T> *RedBlackTree<T>::TreeMaximum(TNODE<T> *target_p) const
 {
 	if (m_root_p == m_sentinel_p)
 		return 0;
@@ -202,24 +196,20 @@ TNODE<T> *RedBlackTree<T>::TreeMaximum(TNODE<T> *target_p)
 }
 
 template<typename T>
-T *RedBlackTree<T>::RemoveMaximum()
+bool RedBlackTree<T>::RemoveMaximum(T *removed_p)
 {
 	TNODE<T> *node_p = TreeMaximum(m_root_p);
 	if (node_p == 0)
-		return 0;
+		return false;
 
-	T *fn_p = node_p->fn_p;
-
-	TreeDelete(node_p);
-
-	return fn_p;
+	return TreeDelete(node_p, removed_p);
 }
 
 template<typename T>
-T *RedBlackTree<T>::Maximum()
+const T *RedBlackTree<T>::Maximum() const
 {
 	TNODE<T> *target_p = TreeMaximum(m_root_p);
-	return target_p ? target_p->fn_p : 0;
+	return target_p ? &target_p->fn : 0;
 }
 
 template<typename T>
@@ -243,12 +233,12 @@ TNODE<T> *RedBlackTree<T>::TreeSuccessor(TNODE<T> *target_p)
 }
 
 template<typename T>
-TNODE<T> *RedBlackTree<T>::Search(T *fn_p)
+TNODE<T> *RedBlackTree<T>::Search(const T &value)
 {
 	TNODE<T> *trv_p = m_root_p;
 
-	while (trv_p != m_sentinel_p && cmp_p(fn_p, trv_p->fn_p) != 0) {
-		if (cmp_p(fn_p, trv_p->fn_p) == -1) {
+	while (trv_p != m_sentinel_p && cmp_p(value, trv_p->fn) != 0) {
+		if (cmp_p(value, trv_p->fn) == -1) {
 			trv_p = trv_p->left_p;
 		} else {
 			trv_p = trv_p->right_p;
@@ -259,78 +249,43 @@ TNODE<T> *RedBlackTree<T>::Search(T *fn_p)
 }
 
 template<typename T>
-T *RedBlackTree<T>::Lookup(T *fn_p)
+const TNODE<T> *RedBlackTree<T>::Search(const T &value) const
 {
-	TNODE<T> *trv_p = m_root_p;
+	const TNODE<T> *trv_p = m_root_p;
 
-	while (trv_p != m_sentinel_p && cmp_p(fn_p, trv_p->fn_p) != 0) {
-		if (cmp_p(fn_p, trv_p->fn_p) == -1) {
+	while (trv_p != m_sentinel_p && cmp_p(value, trv_p->fn) != 0) {
+		if (cmp_p(value, trv_p->fn) == -1) {
 			trv_p = trv_p->left_p;
 		} else {
 			trv_p = trv_p->right_p;
 		}
 	}
 
-	return trv_p == m_sentinel_p ? 0 : trv_p->fn_p;
+	return trv_p == m_sentinel_p ? 0 : trv_p;
 }
 
 template<typename T>
-T *RedBlackTree<T>::Delete(T *fn_p)
+const T *RedBlackTree<T>::Lookup(const T &value) const
 {
-	TNODE<T> *target_p = Search(fn_p), *y_p, *x_p;
-	T *ret_p;
-
-	if (target_p == 0)
-		return 0;
-
-	m_sentinel_p->parent_p = target_p;
-
-	if (target_p->left_p == m_sentinel_p || target_p->right_p == m_sentinel_p) {
-		y_p = target_p;
-	} else {
-		y_p = TreeSuccessor(target_p);
-	}
-
-	if (y_p->left_p != m_sentinel_p) {
-		x_p = y_p->left_p;
-	} else {
-		x_p = y_p->right_p;
-	}
-
-	x_p->parent_p = y_p->parent_p;
-
-	if (y_p->parent_p == m_sentinel_p) {
-		m_root_p = x_p;
-	} else if (y_p == y_p->parent_p->left_p) {
-		y_p->parent_p->left_p = x_p;
-	} else {
-		y_p->parent_p->right_p = x_p;
-	}
-
-	if (y_p != target_p) {
-		ret_p = target_p->fn_p;
-		target_p->fn_p = y_p->fn_p;
-	} else {
-		ret_p = y_p->fn_p;
-	}
-
-	if (y_p->color == BLACK) {
-		DeleteFixup(x_p);
-	}
-	delete y_p;
-
-	return ret_p;
+	const TNODE<T> *trv_p = Search(value);
+	return trv_p == 0 ? 0 : &trv_p->fn;
 }
 
 template<typename T>
-T *RedBlackTree<T>::TreeDelete(TNODE<T> *target_p)
+bool RedBlackTree<T>::Delete(const T &value, T *removed_p)
+{
+	TNODE<T> *target_p = Search(value);
+	return target_p == 0 ? false : TreeDelete(target_p, removed_p);
+}
+
+template<typename T>
+bool RedBlackTree<T>::TreeDelete(TNODE<T> *target_p, T *removed_p)
 {
 	TNODE<T> *y_p, *x_p;
-	T *ret_p;
 	m_sentinel_p->parent_p = target_p;
 
 	if (target_p == m_sentinel_p)
-		return 0;
+		return false;
 
 	if (target_p->left_p == m_sentinel_p || target_p->right_p == m_sentinel_p) {
 		y_p = target_p;
@@ -354,11 +309,12 @@ T *RedBlackTree<T>::TreeDelete(TNODE<T> *target_p)
 		y_p->parent_p->right_p = x_p;
 	}
 
+	if (removed_p) {
+		*removed_p = target_p->fn;
+	}
+
 	if (y_p != target_p) {
-		ret_p = target_p->fn_p;
-		target_p->fn_p = y_p->fn_p;
-	} else {
-		ret_p = y_p->fn_p;
+		target_p->fn = y_p->fn;
 	}
 
 	if (y_p->color == BLACK) {
@@ -366,7 +322,7 @@ T *RedBlackTree<T>::TreeDelete(TNODE<T> *target_p)
 	}
 	delete y_p;
 
-	return ret_p;
+	return true;
 }
 
 template<typename T>

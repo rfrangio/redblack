@@ -1,6 +1,6 @@
 # redblack
 
-Small C++ red-black tree implementation with a simple benchmark driver and an assertion-based test program.
+Small C++ red-black tree implementation with inline value storage, a benchmark driver, and an assertion-based test program.
 
 ## Layout
 
@@ -12,39 +12,31 @@ Small C++ red-black tree implementation with a simple benchmark driver and an as
 
 ## API
 
-`RedBlackTree<T>` stores raw `T*` values and uses a caller-supplied comparator:
+`RedBlackTree<T>` stores values inline in each node and uses a caller-supplied comparator:
 
 ```cpp
 template<typename T>
-int cmp(T *a, T *b)
+int cmp(const T &a, const T &b)
 {
-    if (*a == *b)
+    if (a == b)
         return 0;
-    return *a < *b ? -1 : 1;
+    return a < b ? -1 : 1;
 }
 
 RedBlackTree<uint32_t> tree(cmp);
+tree.Insert(10);
 ```
 
 Public operations:
 
-- `Insert(T*)`
-- `Lookup(T*)`
+- `Insert(const T&)`
+- `Lookup(const T&)`
 - `Minimum()`
 - `Maximum()`
-- `Delete(T*)`
-- `RemoveMaximum()`
+- `Delete(const T&, T*)`
+- `RemoveMaximum(T*)`
 - `NodeCount()`
 - `GetSubtreeDepths(int*, int*)`
-
-## Ownership
-
-The tree stores pointers, not values.
-
-- If an insert succeeds, the tree owns the inserted pointer.
-- `Delete()` and `RemoveMaximum()` return ownership of the removed pointer to the caller.
-- If `Insert()` returns `0` for a duplicate key, the caller still owns that pointer and must free it.
-- The destructor deletes any payloads still held by the tree.
 
 ## Build
 
@@ -69,4 +61,5 @@ The test binary is written to `/tmp/rb_tests` because some environments may not 
 ## Notes
 
 - `Minimum()` and `Maximum()` return `0` when the tree is empty.
+- `Delete()` and `RemoveMaximum()` return `false` when no value is removed.
 - `main.cpp` is a stress/benchmark program, not a lightweight example. It inserts `10,000,000` values by default.
