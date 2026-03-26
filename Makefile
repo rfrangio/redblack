@@ -5,7 +5,7 @@ SRC := main.cpp
 TEST_TARGET := /tmp/rb_tests
 TEST_SRC := tests.cpp
 
-.PHONY: all test clean
+.PHONY: all test benchmark clean
 
 all: $(TARGET)
 
@@ -17,6 +17,9 @@ $(TEST_TARGET): $(TEST_SRC) redblack.h redblack.tpp
 
 test: $(TEST_TARGET)
 	$(TEST_TARGET)
+
+benchmark: $(TARGET)
+	/usr/bin/time -p ./$(TARGET)
 
 clean:
 	rm -f $(TARGET) $(TEST_TARGET)

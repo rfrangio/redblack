@@ -34,6 +34,7 @@ int main()
 	rbtree.GetSubtreeDepths(&left_tree, &right_tree);
 	std::cout << "left subtree depth " << left_tree << " right subtree depth " << right_tree << " \n";
 
+	std::cout << "Deleting " << NUM_OBJECTS << " objects \n";
 	while(rbtree.RemoveMaximum(&res)) {}
 
 	std::cout << "After delete phase rbtree has " << rbtree.NodeCount() << " nodes  \n";
@@ -51,6 +52,7 @@ int main()
 	rbtree.GetSubtreeDepths(&left_tree, &right_tree);
 	std::cout << "left subtree depth " << left_tree << " right subtree depth " << right_tree << " \n";
 
+	std::cout << "Deleting " << NUM_OBJECTS << " objects \n";
 	while(rbtree.RemoveMaximum(&res)) {}
 
 	std::cout << "After delete phase rbtree has " << rbtree.NodeCount() << " nodes  \n";
