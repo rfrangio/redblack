@@ -32,7 +32,7 @@ Public operations:
 
 ## Build
 
-Build the benchmark binary:
+Build the binary:
 
 ```sh
 make
