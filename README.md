@@ -50,6 +50,14 @@ make test
 
 The test binary is written to `/tmp/rb_tests` because some environments may not allow writing additional binaries in the project directory.
 
+## Benchmark
+
+Build and run the benchmark driver in `main.cpp` with `time`:
+
+```sh
+make benchmark
+```
+
 ## Notes
 
 - `Minimum()` and `Maximum()` return `0` when the tree is empty.
